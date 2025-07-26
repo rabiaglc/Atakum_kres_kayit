@@ -21,5 +21,6 @@ from django.urls import path, include # <-- BURADA path ve include OLMALI
 
 urlpatterns = [
     path('admin/', admin.site.urls),          # Django'nun admin paneli URL'i
+    path('accounts/', include('django.contrib.auth.urls')),  # <-- EKLE: Django auth url'leri
     path('', include('kayit_formu.urls')),    # kayit_formu uygulamasının tüm URL'lerini dahil et
 ]
