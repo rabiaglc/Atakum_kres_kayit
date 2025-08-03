@@ -27,6 +27,24 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Güvenlik ayarları
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+# Session güvenliği
+SESSION_COOKIE_SECURE = False  # HTTPS kullanıyorsanız True yapın
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_AGE = 3600  # 1 saat
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # False yaparak oturum süresini uzattık
+
+# CSRF güvenliği
+CSRF_COOKIE_SECURE = False  # HTTPS kullanıyorsanız True yapın
+CSRF_COOKIE_HTTPONLY = True
+
 
 # Application definition
 
@@ -48,6 +66,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'kayit_formu.middleware.SecurityHeadersMiddleware',
+    'kayit_formu.middleware.AdminSecurityMiddleware',
+    'kayit_formu.middleware.LoginAttemptMiddleware',
 ]
 
 ROOT_URLCONF = 'atakum_kres_projesi.urls'
@@ -116,6 +137,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    BASE_DIR / 'kayit_formu' / 'static',
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

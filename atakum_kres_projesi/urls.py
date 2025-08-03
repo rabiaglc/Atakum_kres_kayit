@@ -20,7 +20,8 @@ from django.contrib import admin
 from django.urls import path, include # <-- BURADA path ve include OLMALI
 
 urlpatterns = [
-    path('admin/', admin.site.urls),          # Django'nun admin paneli URL'i
-    path('accounts/', include('django.contrib.auth.urls')),  # <-- EKLE: Django auth url'leri
-    path('', include('kayit_formu.urls')),    # kayit_formu uygulamasının tüm URL'lerini dahil et
+    path('yonetim-paneli/', admin.site.urls),  # Admin URL'ini gizle
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('admin-login/', include('kayit_formu.urls')),  # Özel admin login
+    path('', include('kayit_formu.urls')),
 ]

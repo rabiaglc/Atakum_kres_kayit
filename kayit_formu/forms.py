@@ -1,8 +1,70 @@
 from django import forms
+from django.contrib.auth.forms import AuthenticationForm
 from .models import OnKayit
 
 class DateInput(forms.DateInput):
     input_type = 'date'
+
+class CustomRadioSelect(forms.RadioSelect):
+    """Boş seçenek eklemeyen özel RadioSelect widget'ı"""
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.choices = kwargs.get('choices', [])
+    
+    def render(self, name, value, attrs=None, renderer=None):
+        # Boş seçenek ekleme
+        return super().render(name, value, attrs, renderer)
+    
+    @property
+    def input_type(self):
+        return 'radio'
+
+class AdminLoginForm(AuthenticationForm):
+    """Özel admin login formu"""
+    
+    username = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Kullanıcı adınızı girin',
+            'autocomplete': 'username'
+        }),
+        label='Kullanıcı Adı'
+    )
+    
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Şifrenizi girin',
+            'autocomplete': 'current-password'
+        }),
+        label='Şifre'
+    )
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        username = cleaned_data.get('username')
+        password = cleaned_data.get('password')
+        
+        if username and password:
+            # Kullanıcı var mı kontrol et
+            from django.contrib.auth.models import User
+            try:
+                user = User.objects.get(username=username)
+                if not user.is_active:
+                    raise forms.ValidationError(
+                        "Bu kullanıcı hesabı devre dışı bırakılmış. Lütfen sistem yöneticisi ile iletişime geçin."
+                    )
+                if not user.is_staff:
+                    raise forms.ValidationError(
+                        "Bu kullanıcı adı ile yönetici paneline erişim yetkiniz bulunmamaktadır."
+                    )
+            except User.DoesNotExist:
+                raise forms.ValidationError(
+                    "Kullanıcı adı bulunamadı. Lütfen kullanıcı adınızı kontrol edin."
+                )
+        
+        return cleaned_data
 
 class OkulKayitFormu(forms.ModelForm):
     class Meta:
@@ -38,13 +100,20 @@ class OkulKayitFormu(forms.ModelForm):
             'ikamet_edilen_konut',
             'anne_baba_birliktelik_durumu',
             'velayet_kimde',
+            'birinci_kres_tercihi',
+            'ikinci_kres_tercihi',
+            'ucuncu_kres_tercihi',
+            'kvkk_onay',
         ]
 
         widgets = {
+            'birinci_kres_tercihi': forms.Select(choices=[('', 'Seçiniz')] + OnKayit.KRES_CHOICES),
+            'ikinci_kres_tercihi': forms.Select(choices=[('', 'Seçiniz')] + OnKayit.KRES_CHOICES),
+            'ucuncu_kres_tercihi': forms.Select(choices=[('', 'Seçiniz')] + OnKayit.KRES_CHOICES),
             'dogum_tarihi': DateInput(),
             'ogrencinin_tuvalet_egitimi': forms.RadioSelect(choices=OnKayit.TUVALET_EGITIMI_CHOICES),
             'okul_deneyimi_var': forms.RadioSelect(choices=OnKayit.VAR_YOK_CHOICES),
-            'okul_devlet_mi': forms.RadioSelect(choices=OnKayit.DEVLET_OZEL_CHOICES),
+            'okul_devlet_mi': CustomRadioSelect(choices=OnKayit.DEVLET_OZEL_CHOICES),
             'anne_sag_olu': forms.RadioSelect(choices=OnKayit.SAG_OLU_CHOICES),
             'anne_oz_uvey': forms.RadioSelect(choices=OnKayit.OZ_UVEY_CHOICES),
             'baba_sag_olu': forms.RadioSelect(choices=OnKayit.SAG_OLU_CHOICES),
@@ -81,6 +150,10 @@ class OkulKayitFormu(forms.ModelForm):
             'ikamet_edilen_konut': 'İKAMET EDİLEN KONUT (KİRACI / EV SAHİBİ)',
             'anne_baba_birliktelik_durumu': 'ANNE BABA BİRLİKTELİK (EVLİ / AYRI)',
             'velayet_kimde': 'VELAYET KİMDE?',
+            'birinci_kres_tercihi': 'BİRİNCİ KREŞ TERCİHİ',
+            'ikinci_kres_tercihi': 'İKİNCİ KREŞ TERCİHİ',
+            'ucuncu_kres_tercihi': 'ÜÇÜNCÜ KREŞ TERCİHİ',
+            'kvkk_onay': 'KVKK AYDINLATMA METNİ ONAYI',
         }
 
         exclude = ['puan', 'kayit_tarihi']
@@ -89,6 +162,8 @@ class OkulKayitFormu(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         self.fields['okul_devlet_mi'].required = False
+        # Boş seçenek eklemeyi engelle
+        self.fields['okul_devlet_mi'].widget.choices = OnKayit.DEVLET_OZEL_CHOICES
         self.fields['velayet_kimde'].required = False
 
         # TC Kimlik no 11 hane kontrol için HTML5 pattern

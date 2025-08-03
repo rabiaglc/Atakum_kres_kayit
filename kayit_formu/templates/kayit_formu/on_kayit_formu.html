@@ -1,66 +1,657 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8" />
-    <title>Ön Kayıt Formu</title>
+    <title>Ön Kayıt Formu - Atakum Belediyesi</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #456ebb 0%, #4069af 50%, #4a90e2 100%);
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('{% static "kayit_formu/images/atakum_logo.png" %}');
+            background-size: 300px;
+            background-repeat: repeat;
+            background-position: center;
+            opacity: 0.03;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .header-logo {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+        }
+        
+        .header-logo img {
+            max-width: 200px;
+            height: auto;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+        }
+        
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+        }
+        
+        .form-header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .form-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('{% static "kayit_formu/images/atakum_logo.png" %}');
+            background-size: 150px;
+            background-repeat: no-repeat;
+            background-position: right bottom;
+            opacity: 0.1;
+        }
+        
+        .form-header h4 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1.8rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .form-header p {
+            margin: 0.5rem 0 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: #495057;
+            padding: 1rem 1.5rem;
+            margin: 0;
+            font-weight: 600;
+            border-bottom: 2px solid #dee2e6;
+            position: relative;
+        }
+        
+        .section-header::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        }
+        
+        .form-control:focus {
+            border-color: #2a5298;
+            box-shadow: 0 0 0 0.2rem rgba(42, 82, 152, 0.25);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            border: none;
+            padding: 12px 30px;
+            font-weight: 600;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+        }
+        
+        /* KVKK Bölümü Stilleri */
+        .kvkk-section {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #2a5298;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 4px 15px rgba(42, 82, 152, 0.1);
+        }
+        
+        .kvkk-text h6 {
+            color: #2a5298;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .kvkk-content {
+            background: rgba(42, 82, 152, 0.05);
+            border-left: 4px solid #2a5298;
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .kvkk-content p {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .kvkk-content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .kvkk-content ul {
+            margin-left: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .kvkk-content li {
+            margin-bottom: 0.25rem;
+            font-size: 0.85rem;
+        }
+        
+        .kvkk-checkbox {
+            background: rgba(42, 82, 152, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+        }
+        
+        .kvkk-checkbox .form-check {
+            margin: 0;
+        }
+        
+        .kvkk-checkbox .form-check-label {
+            font-weight: 600;
+            color: #2a5298;
+            cursor: pointer;
+        }
+        
+        .kvkk-checkbox input[type="checkbox"] {
+            transform: scale(1.2);
+            margin-right: 0.5rem;
+        }
+        
+        /* Radio Button Stilleri */
+        .form-check-inline {
+            margin-right: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-check-inline .form-check-input {
+            transform: scale(1.2);
+            margin-right: 0.5rem;
+            border: 2px solid #333;
+        }
+        
+        .form-check-inline .form-check-input:checked {
+            background-color: #2a5298;
+            border-color: #2a5298;
+        }
+        
+        .form-check-inline .form-check-input:focus {
+            box-shadow: 0 0 0 0.2rem rgba(42, 82, 152, 0.25);
+        }
+        
+        .form-check-inline .form-check-label {
+            font-weight: 600;
+            color: #333;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .form-check-inline .form-check-label:hover {
+            color: #000;
+        }
+        
+        .radio-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding: 0.5rem 0;
+        }
+        
+        /* Dinamik alanlar için radio button stilleri */
+        .dynamic-field .radio-group .form-check-inline .form-check-input {
+            transform: scale(1.2);
+            margin-right: 0.5rem;
+            border: 2px solid #333;
+        }
+        
+        .dynamic-field .radio-group .form-check-inline .form-check-input:checked {
+            background-color: #2a5298;
+            border-color: #2a5298;
+        }
+        
+        .dynamic-field .radio-group .form-check-inline .form-check-input:focus {
+            box-shadow: 0 0 0 0.2rem rgba(42, 82, 152, 0.25);
+        }
+        
+        .dynamic-field .radio-group .form-check-inline .form-check-label {
+            font-weight: 600;
+            color: #333;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .dynamic-field .radio-group .form-check-inline .form-check-label:hover {
+            color: #000;
+        }
+        
+        /* okul_devlet_mi alanı için özel stiller - daha güçlü selector */
+        input[type="radio"][name="okul_devlet_mi"] {
+            transform: scale(1.2) !important;
+            margin-right: 0.5rem !important;
+            border: 2px solid #333 !important;
+            appearance: none !important;
+            -webkit-appearance: none !important;
+            -moz-appearance: none !important;
+            width: 16px !important;
+            height: 16px !important;
+            border-radius: 50% !important;
+            background-color: white !important;
+        }
+        
+        input[type="radio"][name="okul_devlet_mi"]:checked {
+            background-color: #2a5298 !important;
+            border-color: #2a5298 !important;
+            position: relative !important;
+        }
+        
+        input[type="radio"][name="okul_devlet_mi"]:checked::after {
+            content: '' !important;
+            position: absolute !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            width: 6px !important;
+            height: 6px !important;
+            background-color: white !important;
+            border-radius: 50% !important;
+        }
+        
+        input[type="radio"][name="okul_devlet_mi"]:focus {
+            box-shadow: 0 0 0 0.2rem rgba(42, 82, 152, 0.25) !important;
+        }
+        
+        /* okul_devlet_mi label'ları için */
+        label[for*="okul_devlet_mi"] {
+            font-weight: 600 !important;
+            color: #333 !important;
+            cursor: pointer !important;
+            transition: color 0.3s ease !important;
+        }
+        
+        label[for*="okul_devlet_mi"]:hover {
+            color: #000 !important;
+        }
+        
+        /* KVKK Toggle Stilleri */
+        .kvkk-toggle {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: rgba(42, 82, 152, 0.1);
+            border-radius: 10px;
+            border: 2px solid transparent;
+        }
+        
+        .kvkk-toggle:hover {
+            background: rgba(42, 82, 152, 0.15);
+            border-color: #2a5298;
+        }
+        
+        .kvkk-toggle .kvkk-icon {
+            transition: transform 0.3s ease;
+            color: #2a5298;
+        }
+        
+        .kvkk-toggle.active .kvkk-icon {
+            transform: rotate(180deg);
+        }
+        
+        .kvkk-text {
+            flex: 1;
+            margin-right: 1rem;
+        }
+        
+        /* KVKK Modal Stilleri */
+        .kvkk-modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+        
+        .kvkk-modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .kvkk-modal-header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .kvkk-modal-header h5 {
+            margin: 0;
+            font-weight: 700;
+        }
+        
+        .kvkk-modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .kvkk-modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+        
+        .kvkk-modal-body {
+            padding: 2rem;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        
+        .kvkk-modal-body h6 {
+            color: #2a5298;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .kvkk-modal-body p {
+            margin-bottom: 0.8rem;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+        
+        .kvkk-modal-body ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .kvkk-modal-body li {
+            margin-bottom: 0.3rem;
+            line-height: 1.5;
+        }
+        
+        .kvkk-modal-footer {
+            background: #f8f9fa;
+            padding: 1rem 2rem;
+            border-top: 1px solid #dee2e6;
+            text-align: right;
+        }
+        
+        .kvkk-modal-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .kvkk-modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+        }
+        
+        /* Adres alanı için özel stil */
+        textarea[name="adres"] {
+            resize: vertical;
+            min-height: 80px;
+            max-height: 120px;
+        }
+        
+        /* Dinamik alanlar için stil */
+        .dynamic-field {
+            transition: all 0.3s ease;
+        }
+        
+        .dynamic-field.hidden {
+            display: none !important;
+            visibility: hidden;
+        }
+        
+        .floating-logo:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .floating-logo img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+        
+        /* Güvenli Yönetici Girişi */
+        .admin-access {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .admin-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.4);
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            opacity: 0.6;
+        }
+        
+        .admin-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.8);
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            opacity: 1;
+        }
+        
+        /* Floating logo'yu sağa taşı */
+        .floating-logo {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        @media (max-width: 768px) {
+            .floating-logo {
+                width: 60px;
+                height: 60px;
+                bottom: 15px;
+                right: 15px;
+            }
+            
+            .floating-logo img {
+                width: 45px;
+                height: 45px;
+            }
+            
+            .admin-access {
+                top: 15px;
+                right: 15px;
+            }
+            
+            .admin-link {
+                width: 35px;
+                height: 35px;
+                font-size: 12px;
+            }
+        }
+    </style>
 </head>
-<body class="bg-light">
+<body>
 
 <div class="container py-5">
-    <div class="row">
-        <div class="col-12 d-flex justify-content-end">
-            <a href="/accounts/login/?next=/kayitlar/" class="btn btn-outline-primary mb-3">Admin Girişi</a>
-        </div>
+    
+    <!-- Header Logo -->
+    <div class="header-logo">
+        <img src="{% static 'kayit_formu/images/atakum_logo.png' %}" alt="Atakum Belediyesi Logo" class="img-fluid">
     </div>
+    
     <div class="row justify-content-center">
         <div class="col-lg-10">
-            <div class="card shadow-lg rounded-4">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Kreş Ön Kayıt Formu</h4>
+            <div class="form-container">
+                <div class="form-header">
+                    <h4><i class="fas fa-child me-2"></i>Kreş Ön Kayıt Formu</h4>
+                    <p>Atakum Belediyesi Kreş Hizmetleri</p>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
                     <form method="post" novalidate>
                         {% csrf_token %}
 
-                        <h5 class="mt-3 mb-2 border-bottom pb-1">Öğrenci Bilgileri</h5>
-                        <div class="row g-3">
+                        <h5 class="section-header"><i class="fas fa-user-graduate me-2"></i>Öğrenci Bilgileri</h5>
+                        <div class="row g-3 p-3">
                             {% for field in form %}
-                                {% if field.name == 'anne_ad_soyad' %}
+                                {% if field.name == 'birinci_kres_tercihi' %}
                                     </div>
-                                    <h5 class="mt-4 mb-2 border-bottom pb-1">Anne Bilgileri</h5>
-                                    <div class="row g-3">
+                                    <h5 class="section-header"><i class="fas fa-school me-2"></i>Kreş Tercihleri</h5>
+                                    <div class="row g-3 p-3">
+                                {% elif field.name == 'anne_ad_soyad' %}
+                                    </div>
+                                    <h5 class="section-header"><i class="fas fa-female me-2"></i>Anne Bilgileri</h5>
+                                    <div class="row g-3 p-3">
                                 {% elif field.name == 'baba_ad_soyad' %}
                                     </div>
-                                    <h5 class="mt-4 mb-2 border-bottom pb-1">Baba Bilgileri</h5>
-                                    <div class="row g-3">
+                                    <h5 class="section-header"><i class="fas fa-male me-2"></i>Baba Bilgileri</h5>
+                                    <div class="row g-3 p-3">
                                 {% elif field.name == 'ailedeki_cocuk_sayisi' %}
                                     </div>
-                                    <h5 class="mt-4 mb-2 border-bottom pb-1">Aile ve Diğer Bilgiler</h5>
-                                    <div class="row g-3">
+                                    <h5 class="section-header"><i class="fas fa-home me-2"></i>Aile ve Diğer Bilgiler</h5>
+                                    <div class="row g-3 p-3">
+                                {% elif field.name == 'kvkk_onay' %}
+                                    </div>
+                                    <h5 class="section-header"><i class="fas fa-shield-alt me-2"></i>KVKK Aydınlatma Metni</h5>
+                                    <div class="row g-3 p-3">
                                 {% endif %}
 
-                                <div class="col-md-6">
+                                <div class="col-md-6 {% if field.name == 'okul_devlet_mi' %}dynamic-field hidden{% endif %}">
                                     <label for="{{ field.id_for_label }}" class="form-label fw-semibold">
                                         {{ field.label }}{% if field.field.required %}<span class="text-danger"> *</span>{% endif %}
                                     </label>
 
                                     {% if field.field.widget.input_type|default:'' == 'radio' %}
-                                        <div>
+                                        <div class="radio-group">
                                             {% for subwidget in field %}
                                                 <div class="form-check form-check-inline">
                                                     {{ subwidget.tag }}
-                                                    <label class="form-check-label ms-1" for="{{ subwidget.id_for_label }}">{{ subwidget.choice_label }}</label>
+                                                    <label class="form-check-label" for="{{ subwidget.id_for_label }}">{{ subwidget.choice_label }}</label>
                                                 </div>
                                             {% endfor %}
                                         </div>
                                     {% elif field.field.widget.input_type|default:'' == 'checkbox' %}
-                                        <div class="form-check">
-                                            {{ field }}
-                                            <label class="form-check-label ms-1" for="{{ field.id_for_label }}">{{ field.label }}</label>
-                                        </div>
+                                        {% if field.name == 'kvkk_onay' %}
+                                            <div class="kvkk-section">
+                                                <div class="kvkk-checkbox">
+                                                    <div class="form-check">
+                                                        {{ field }}
+                                                        <label class="form-check-label kvkk-toggle" for="{{ field.id_for_label }}">
+                                                            <i class="fas fa-check-circle me-2"></i>
+                                                            <span class="kvkk-text">Kişisel Verilerin Korunması Kanunu kapsamında aydınlatma metnini okudum ve onaylıyorum.</span>
+                                                            <i class="fas fa-external-link-alt ms-2 kvkk-icon"></i>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% else %}
+                                            <div class="form-check">
+                                                {{ field }}
+                                                <label class="form-check-label ms-1" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                            </div>
+                                        {% endif %}
                                     {% else %}
                                         {{ field }}
                                     {% endif %}
@@ -75,7 +666,9 @@
                         </div>
 
                         <div class="text-end mt-4">
-                            <button type="submit" class="btn btn-success px-4 py-2">Başvuruyu Gönder</button>
+                            <button type="submit" class="btn btn-success px-4 py-2">
+                                <i class="fas fa-paper-plane me-2"></i>Başvuruyu Gönder
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -88,33 +681,160 @@
             {% endif %}
         </div>
     </div>
+    
+    <!-- Floating Logo -->
+    <a href="https://atakum.bel.tr/" target="_blank" class="floating-logo" title="Atakum Belediyesi Resmi Web Sitesi">
+        <img src="{% static 'kayit_formu/images/atakum_logo.png' %}" alt="Atakum Belediyesi">
+    </a>
+    
+    <!-- Güvenli Yönetici Girişi -->
+    <div class="admin-access">
+        <a href="/yonetim-paneli/" class="admin-link" title="Yönetici Paneli">
+            <i class="fas fa-cog"></i>
+        </a>
+    </div>
+    
+    <!-- KVKK Modal -->
+    <div id="kvkkModal" class="kvkk-modal">
+        <div class="kvkk-modal-content">
+            <div class="kvkk-modal-header">
+                <h5><i class="fas fa-shield-alt me-2"></i>ATAKUM BELEDİYESİ KİŞİSEL VERİLERİN KORUNMASI VE İŞLENMESİ HAKKINDA GENEL AYDINLATMA METNİ</h5>
+                <button class="kvkk-modal-close" onclick="closeKvkkModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="kvkk-modal-body">
+                <h6><strong>1. AMAÇ</strong></h6>
+                <p>Bu aydınlatma metni 6698 sayılı Kişisel Verilerin Korunması Kanunu'nun ("KVKK") 10. Maddesi ile Aydınlatma Yükümlülüğünün Yerine Getirilmesinde Uyulacak Usul ve Esaslar Hakkında Tebliğ kapsamında veri sorumlusu sıfatıyla Atakum Belediye Başkanlığı tarafından hazırlanmıştır.</p>
+                
+                <h6><strong>2. KAPSAM</strong></h6>
+                <p>Atakum Belediye Başkanlığı olarak, sizlere ait her türlü kişisel verinin mümkün olabilen en iyi şekilde ve özenle işlenerek muhafaza edilmesine büyük hassasiyet göstermekteyiz. 6698 sayılı Kişisel Verilerin Korunması Kanunu uyarınca, kişisel verileriniz; Atakum Belediye Başkanlığı olarak aşağıda açıklanan amaçlar kapsamında; hukuka ve dürüstlük kurallarına uygun bir şekilde işleyebilecek, kaydedebilecek, saklayabilecek, sınıflandırabilecek, güncelleyebilecek ve mevzuatın izin verdiği hallerde ve/veya işlendikleri amaçla sınırlı olarak 3. kişilere açıklayabilecek/aktarabilecektir.</p>
+                
+                <h6><strong>3. İŞLENEN KİŞİSEL VERİLER</strong></h6>
+                <p>Kreş ön kayıt başvurusu kapsamında toplanan kişisel verileriniz:</p>
+                <ul>
+                    <li>Öğrenci kimlik bilgileri (ad, soyad, TC kimlik no, doğum tarihi)</li>
+                    <li>İletişim bilgileri (telefon, adres)</li>
+                    <li>Aile bilgileri (anne-baba ad, soyad, meslek, gelir bilgileri)</li>
+                    <li>Eğitim ve sağlık bilgileri</li>
+                    <li>Kreş tercih bilgileri</li>
+                </ul>
+                
+                <h6><strong>4. KİŞİSEL VERİLERİNİZİN İŞLENME AMACI</strong></h6>
+                <p>Kişisel verileriniz aşağıdaki amaçlarla işlenmektedir:</p>
+                <ul>
+                    <li>Kreş ön kayıt başvurusunun değerlendirilmesi</li>
+                    <li>Başvuru sürecinin yönetimi ve takibi</li>
+                    <li>Yasal yükümlülüklerin yerine getirilmesi</li>
+                    <li>İletişim faaliyetlerinin yürütülmesi</li>
+                </ul>
+                
+                <h6><strong>5. KİŞİSEL VERİLERİN TOPLANMA YÖNTEMİ VE HUKUKİ SEBEBİ</strong></h6>
+                <p>Kişisel verileriniz, KVKK'nın 5. maddesinde belirtilen hukuki sebeplere dayanarak, elektronik form aracılığıyla toplanmaktadır.</p>
+                
+                <h6><strong>6. KİŞİSEL VERİLERİNİZİN AKTARIMI</strong></h6>
+                <p>Kişisel verileriniz, KVKK Madde 8 ve Madde 9'da öngörülen koşulların gerçekleşmesi durumunda üçüncü kişilere aktarılabilir. Bu kapsamda verileriniz:</p>
+                <ul>
+                    <li>Yasal yükümlülükler gereği kamu kurum ve kuruluşlarına</li>
+                    <li>Hizmet süreçlerinin yürütülmesi amacıyla çözüm ortaklarına</li>
+                    <li>Güvenlik ve denetim amaçlı yetkili kurumlara aktarılabilir</li>
+                </ul>
+                
+                <h6><strong>7. KİŞİSEL VERİLERİN SAKLANMASI VE İMHA EDİLMESİ</strong></h6>
+                <p>Kişisel verileriniz, işleme amacı doğrultusunda ve yasal yükümlülüklerimizin gerektirdiği süre boyunca saklanacak, bu süre sonunda imha edilecektir.</p>
+                
+                <h6><strong>8. KİŞİSEL VERİLERİNİZE İLİŞKİN HAKLARINIZ</strong></h6>
+                <p>KVKK'nın 11. maddesi uyarınca aşağıdaki haklara sahipsiniz:</p>
+                <ul>
+                    <li>Kişisel verilerinizin işlenip işlenmediğini öğrenme</li>
+                    <li>Kişisel verilerinizin işlenme amacını öğrenme</li>
+                    <li>Kişisel verilerinizin eksik veya yanlış işlenmiş olması hâlinde düzeltilmesini isteme</li>
+                    <li>Kişisel verilerinizin silinmesini veya yok edilmesini isteme</li>
+                    <li>İşlenen verilerinizin münhasıran otomatik sistemler vasıtasıyla analiz edilmesi suretiyle kişinin kendisi aleyhine bir sonucun ortaya çıkmasına itiraz etme</li>
+                </ul>
+                
+                <h6><strong>9. VERİ GÜVENLİĞİ VE BAŞVURU HAKKI</strong></h6>
+                <p>Yukarıda belirtilen haklarınızı kullanmak için Atakum Belediye Başkanlığı'na Mimarsinan, İsmet İnönü Bulvarı, No:114, 55200 Atakum/Samsun adresine yazılı olarak, Kayıtlı Elektronik Posta (KEP) yoluyla atakumbelediyesi@hs01.kep.tr adresine veya elektronik posta üzerinden bilgi@atakum.bel.tr adresine başvurabilirsiniz.</p>
+            </div>
+            <div class="kvkk-modal-footer">
+                <button class="kvkk-modal-btn" onclick="closeKvkkModal()">
+                    <i class="fas fa-check me-2"></i>Anladım
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Bootstrap JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+<!-- KVKK Modal Fonksiyonları -->
+<script>
+function openKvkkModal() {
+    document.getElementById('kvkkModal').style.display = 'block';
+    document.body.style.overflow = 'hidden'; // Scroll'u engelle
+}
+
+function closeKvkkModal() {
+    document.getElementById('kvkkModal').style.display = 'none';
+    document.body.style.overflow = 'auto'; // Scroll'u geri aç
+}
+</script>
+
 <!-- Dinamik Alanlar için JS -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // KVKK Modal Fonksiyonu
+    const kvkkToggle = document.querySelector('.kvkk-toggle');
+    const kvkkModal = document.getElementById('kvkkModal');
+    
+    if (kvkkToggle && kvkkModal) {
+        kvkkToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            openKvkkModal();
+        });
+    }
+    
+    // Modal dışına tıklayınca kapatma
+    kvkkModal.addEventListener('click', function(e) {
+        if (e.target === kvkkModal) {
+            closeKvkkModal();
+        }
+    });
+    
+    // ESC tuşu ile kapatma
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && kvkkModal.style.display === 'block') {
+            closeKvkkModal();
+        }
+    });
+    
     // Okul deneyimi varsa "Devlet/Özel" göster/gizle
     const okulDeneyimiRadios = document.querySelectorAll('input[name="okul_deneyimi_var"]');
-    const okulDevletInputs = document.querySelectorAll('input[name="okul_devlet_mi"]');
-    let okulDevletDiv = null;
-    if (okulDevletInputs.length > 0) {
-        okulDevletDiv = okulDevletInputs[0].closest('div');
-    }
+    const okulDevletDiv = document.querySelector('.col-md-6.dynamic-field');
 
     function toggleOkulDevlet() {
         let secili = Array.from(okulDeneyimiRadios).find(r => r.checked);
         if (secili && secili.value === 'True') {
-            if (okulDevletDiv) okulDevletDiv.style.display = '';
+            if (okulDevletDiv) {
+                okulDevletDiv.classList.remove('hidden');
+                okulDevletDiv.style.display = 'block';
+            }
         } else {
-            if (okulDevletDiv) okulDevletDiv.style.display = 'none';
+            if (okulDevletDiv) {
+                okulDevletDiv.classList.add('hidden');
+                okulDevletDiv.style.display = 'none';
+            }
             // Seçili ise temizle
+            const okulDevletInputs = document.querySelectorAll('input[name="okul_devlet_mi"]');
             okulDevletInputs.forEach(r => r.checked = false);
         }
     }
+    
+    // Event listener'ları ekle
     okulDeneyimiRadios.forEach(r => r.addEventListener('change', toggleOkulDevlet));
+    
+    // Sayfa yüklendiğinde çalıştır
     toggleOkulDevlet();
 
     // Anne-baba ayrıysa "Velayet kimde" göster/gizle
@@ -136,6 +856,44 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     birliktelikRadios.forEach(r => r.addEventListener('change', toggleVelayet));
     toggleVelayet();
+
+    // Kreş tercihleri kontrolü - aynı seçenek seçilemesin
+    const birinciTercih = document.querySelector('select[name="birinci_kres_tercihi"]');
+    const ikinciTercih = document.querySelector('select[name="ikinci_kres_tercihi"]');
+    const ucuncuTercih = document.querySelector('select[name="ucuncu_kres_tercihi"]');
+
+    function updateKresTercihleri() {
+        const secilenler = [
+            birinciTercih.value,
+            ikinciTercih.value,
+            ucuncuTercih.value
+        ];
+
+        // İkinci tercih seçeneklerini güncelle
+        Array.from(ikinciTercih.options).forEach(option => {
+            if (option.value && secilenler[0] === option.value) {
+                option.disabled = true;
+            } else {
+                option.disabled = false;
+            }
+        });
+
+        // Üçüncü tercih seçeneklerini güncelle
+        Array.from(ucuncuTercih.options).forEach(option => {
+            if (option.value && (secilenler[0] === option.value || secilenler[1] === option.value)) {
+                option.disabled = true;
+            } else {
+                option.disabled = false;
+            }
+        });
+    }
+
+    if (birinciTercih && ikinciTercih && ucuncuTercih) {
+        birinciTercih.addEventListener('change', updateKresTercihleri);
+        ikinciTercih.addEventListener('change', updateKresTercihleri);
+        ucuncuTercih.addEventListener('change', updateKresTercihleri);
+        updateKresTercihleri();
+    }
 });
 </script>
 

@@ -11,4 +11,5 @@ urlpatterns = [
     path('kayit-basarili/', views.kayit_basarili, name='kayit_basarili'), # Kayıt başarılı sayfası
     path('kayitlar/', views.admin_kayit_listesi, name='admin_kayit_listesi'), # Kayıt listesi (giriş gerektirir)
     path('kayitlar/<int:pk>/', views.kayit_detay, name='kayit_detay'), # Başvuru detay sayfası
+    path('admin-login/', views.admin_login_view, name='admin_login'), # Özel admin login
 ]

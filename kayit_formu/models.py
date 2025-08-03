@@ -2,17 +2,40 @@ from django.db import models
 
 
 class OnKayit(models.Model):
-    # === Kayıt Şubesi ===
-    SUBE_CHOICES = [
-        ('atakum_anaokulu_merkezi', 'Atakum Anaokulu Merkezi'),
-        ('yeni_mahalle_anaokulu', 'Yeni Mahalle Anaokulu'),
-        ('cumhuriyet_anaokulu', 'Cumhuriyet Anaokulu'),
+    # === Kreş Tercihleri ===
+    KRES_CHOICES = [
+        ('secenek_1', 'Seçenek 1'),
+        ('secenek_2', 'Seçenek 2'),
+        ('secenek_3', 'Seçenek 3'),
+        ('secenek_4', 'Seçenek 4'),
     ]
-    kayit_olmak_istedigi_sube = models.CharField(
-        max_length=50,
-        choices=SUBE_CHOICES,
-        default='atakum_anaokulu_merkezi',
-        verbose_name="Kayıt Olmak İstediği Şube"
+    birinci_kres_tercihi = models.CharField(
+        max_length=20,
+        choices=KRES_CHOICES,
+        blank=True,
+        null=True,
+        verbose_name="Birinci Kreş Tercihi"
+    )
+    ikinci_kres_tercihi = models.CharField(
+        max_length=20,
+        choices=KRES_CHOICES,
+        blank=True,
+        null=True,
+        verbose_name="İkinci Kreş Tercihi"
+    )
+    ucuncu_kres_tercihi = models.CharField(
+        max_length=20,
+        choices=KRES_CHOICES,
+        blank=True,
+        null=True,
+        verbose_name="Üçüncü Kreş Tercihi"
+    )
+    
+    # KVKK Aydınlatma Metni Onayı
+    kvkk_onay = models.BooleanField(
+        default=False,
+        verbose_name="KVKK Aydınlatma Metni Onayı",
+        help_text="Kişisel Verilerin Korunması Kanunu kapsamında aydınlatma metnini okudum ve onaylıyorum."
     )
 
     # === Öğrenci Bilgileri ===
